@@ -31,23 +31,12 @@ void showAutomaton(uint64_t *automaton, int n, int m)
         for(j = 0; j < m; ++j) {
             if(NOT j) printf("     ");
             CURRENTSTATE(automaton[i], j, state);
-            //printf(state ? "\033[07m  \033[m" : "  ");
-            printf(state ? "\033[07m ": " ")
+            printf(state ? "\033[07m  \033[m" : "  ");
         } 
         printf("\033[E");
     }
     printf("\033[E");
     fflush(stdout);
-}
-void rndStart(uint64_t *automaton, int n, int m) 
-{
-    srand(rdtsc());
-    int i; 
-    uint64_t range = (1 << (m + 1));
-    for(i = 0; i < n; ++i) {
-        uint64_t rnd = rand() % range;
-        automaton[i] |= rnd;
-    }
 }
 void rndFixedStart(uint64_t *automaton, int n, int m, int f)
 {
@@ -91,7 +80,7 @@ void rule(uint64_t *automaton, int n, int m)
 void gameOfLife(uint64_t *automaton, int n, int m, int f)
 {
     if (f) rndFixedStart(automaton, n, m, f);
-    else rndFixedStart(automaton, n, m, n);
+    else rndFixedStart(automaton, n, m, n + m);
 	while (1) {
 		showAutomaton(automaton, n, m);
 		rule(automaton, n, m);
@@ -100,8 +89,23 @@ void gameOfLife(uint64_t *automaton, int n, int m, int f)
 }
 int main(int argv, char **argc)
 {
-    /* se codifica el automata como un arreglo de bitfields */
+    /* automaton encoded like a bitfield array */
     uint64_t automaton[64] = {0};
+    int n, m, f;
+    switch(argv) {
+        case 3: n = atoi(argc[1]);
+                m = atoi(argc[2]);
+                break;
+        case 4: n = atoi(argc[1]);
+                m = atoi(argc[2]);
+                f = atoi(argc[3]);
+                break;
+        default: n = 10; m = 10; f = 25; break;
+    }
+    if((n < 2 OR m < 2) AND (n > 62 OR m > 62)) {
+        printf("TRY WITH ANOTHER DIMENSIONS\n");
+        return 0;
+    }
     gameOfLife(automaton, 10, 10, 0);
     return 0;
 }
