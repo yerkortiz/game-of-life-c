@@ -1,8 +1,8 @@
 /* 
     Author: Yerko Ortiz 
     Year: 2020
-    Conway's game of life implemented using an array of bitfields.
-    For future work would be interesting increase the maximum size of the grid
+    Conway's game of life implemented using a bitfield array
+    For future work would be interesting to increase the maximum size of the grid
     and upgrade the visualization of the automaton, but by the moment
     this works perfect.
 */
