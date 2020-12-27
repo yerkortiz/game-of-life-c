@@ -2,9 +2,6 @@
     Author: Yerko Ortiz 
     Year: 2020
     Conway's game of life implemented using a bitfield array
-    For future work would be interesting to increase the maximum size of the grid
-    and upgrade the visualization of the automaton, but by the moment
-    this works perfect.
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,13 +15,13 @@
 #define OR ||
 #define NOT !
 
-uint64_t rdtsc(){
+uint64_t rdtsc() {
     unsigned int lo,hi;
     __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
     return ((uint64_t)hi << 32) | lo;
 }
-void showAutomaton(uint64_t *automaton, int n, int m)
-{
+
+void showAutomaton(uint64_t *automaton, int n, int m) {
     printf("\033[H\033[E\033[E\033[E");
     int i, j, state;
     for(i = 0; i < n; ++i) {
@@ -38,8 +35,8 @@ void showAutomaton(uint64_t *automaton, int n, int m)
     printf("\033[E");
     fflush(stdout);
 }
-void rndFixedStart(uint64_t *automaton, int n, int m, int f)
-{
+
+void rndFixedStart(uint64_t *automaton, int n, int m, int f) {
     srand(rdtsc());
     while(f > 0) {
         int i = rand() % n, j = rand() % m;
@@ -47,8 +44,8 @@ void rndFixedStart(uint64_t *automaton, int n, int m, int f)
         --f;
     }
 }
-int mooreNeighborhood(uint64_t *automaton, int x, int y, int n, int m)
-{
+
+int mooreNeighborhood(uint64_t *automaton, int x, int y, int n, int m) {
     int neighbors, i, j, state, endI, endJ, startI, startJ;
     neighbors = 0;
     startI = (x - 1) < 0 ? 0 : x - 1;
@@ -64,8 +61,8 @@ int mooreNeighborhood(uint64_t *automaton, int x, int y, int n, int m)
     }
     return neighbors;
 }
-void rule(uint64_t *automaton, int n, int m) 
-{
+
+void rule(uint64_t *automaton, int n, int m) {
     int i, j, neighbors, state;
     for(i = 0; i < n; ++i)
         for(j = 0; j < m; ++j){
@@ -77,8 +74,8 @@ void rule(uint64_t *automaton, int n, int m)
             if(NOT state AND (neighbors == 2 OR neighbors == 3)) XORBIT(automaton[i], j);
         }
 }
-void gameOfLife(uint64_t *automaton, int n, int m, int f)
-{
+
+void gameOfLife(uint64_t *automaton, int n, int m, int f) {
     if (f) rndFixedStart(automaton, n, m, f);
     else rndFixedStart(automaton, n, m, n + m);
 	while (1) {
@@ -87,8 +84,8 @@ void gameOfLife(uint64_t *automaton, int n, int m, int f)
 		usleep(2000000);
 	}
 }
-int main(int argv, char **argc)
-{
+
+int main(int argv, char **argc) {
     /* automaton encoded like a bitfield array */
     uint64_t automaton[64] = {0};
     int n, m, f;
